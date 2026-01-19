@@ -1,0 +1,186 @@
+Person-in-the-Middle Proxy Lab
+Client-Side Bypass Using Burp Suite
+📌 Overview
+
+This lab focused on understanding Person-in-the-Middle (PITM) proxy techniques using Burp Suite to intercept and manipulate web traffic.
+The objective was to bypass client-side security controls in a vulnerable web application by modifying HTTP requests before they reached the server.
+
+The lab simulated a real-world scenario where a user with $0.00 account balance attempts to purchase expensive items by exploiting client-side trust flaws.
+
+🎯 Lab Objectives
+
+Understand how web traffic flows between a browser and a server
+
+Configure and use Burp Suite as an intercepting proxy
+
+Intercept HTTP requests and modify parameters
+
+Bypass client-side validation logic
+
+Demonstrate why server-side validation is critical
+
+🛠️ Tools & Environment
+
+Operating System: Kali Linux
+
+Proxy Tool: Burp Suite Community Edition
+
+Browser: Firefox (configured with proxy)
+
+Lab Environment: Localhost vulnerable web application
+
+Shell: training-shell
+
+🧩 Lab Scope
+
+Only challenges under the Logic Flaws section were attempted:
+
+Client-Side Bypass
+
+Proxy Interception
+
+⚙️ Setup Steps
+1️⃣ Start the Lab Environment
+
+In the training shell, the lab was verified to be running:
+
+running
+
+
+Confirmed that hub-2 was active.
+
+2️⃣ Launch Burp Suite
+
+Burp Suite was launched from the Kali system and configured with the default proxy listener:
+
+127.0.0.1 : 8080
+
+3️⃣ Configure Browser Proxy
+
+The browser was manually configured to route traffic through Burp:
+
+Proxy IP: 127.0.0.1
+
+Port: 8080
+
+Burp’s CA certificate was installed in the browser to allow HTTPS interception.
+
+4️⃣ Enable Interception
+
+In Burp Suite:
+
+Proxy → Intercept → Intercept is ON
+
+
+This allowed Burp to pause requests before they reached the server.
+
+🔍 Exploitation Process (Step-by-Step)
+Step 1: Attempt Normal Purchase
+
+Logged in as user: student
+
+Account balance: $0.00
+
+Attempted to add expensive items to the cart
+
+The application blocked the action using client-side validation
+
+Step 2: Intercept “Add to Cart” Request
+
+When clicking Add to Cart, Burp intercepted a request similar to:
+
+POST /add-to-cart HTTP/1.1
+Host: localhost
+Content-Type: application/x-www-form-urlencoded
+
+product_id=5&price=1500&quantity=1
+
+Step 3: Modify Request Parameters
+
+The request was edited directly inside Burp:
+
+Original:
+product_id=5&price=1500&quantity=1
+
+Modified:
+product_id=5&price=1&quantity=1
+
+Step 4: Forward the Request
+
+After modification, the Forward button was clicked.
+
+✅ The item successfully appeared in the shopping cart
+✅ The server accepted the manipulated price
+✅ Client-side controls were bypassed
+
+🧠 Key Discoveries
+
+Client-side validation can be bypassed easily
+
+Burp Suite allows full visibility and modification of web traffic
+
+Servers that trust client input are vulnerable
+
+Prices, balances, and permissions should never be enforced on the client
+
+📚 What I Learned
+
+How proxies work in web security testing
+
+How HTTP requests are structured (headers + body)
+
+How attackers manipulate POST and GET parameters
+
+Why HTTPS does not protect against logic flaws
+
+The importance of server-side validation
+
+🚨 Real-World Attacker Use
+
+In real applications, attackers can use this technique to:
+
+Purchase items for free
+
+Bypass payment checks
+
+Manipulate account balances
+
+Exploit discount and coupon systems
+
+Commit financial fraud
+
+This exact vulnerability has caused real financial losses in production systems.
+
+🔐 How Applications Can Be Secured
+
+To prevent this attack:
+
+✅ Enforce server-side validation
+
+✅ Never trust client-sent values (price, role, balance)
+
+✅ Recalculate prices on the server
+
+✅ Use integrity checks or server-side sessions
+
+✅ Log and monitor suspicious request manipulation
+
+🧪 Lab Outcome
+
+✔ Successfully intercepted HTTP traffic
+
+✔ Modified sensitive parameters
+
+✔ Bypassed client-side controls
+
+✔ Completed purchase with $0 balance
+
+🏁 Conclusion
+
+This lab demonstrated how logic flaws combined with client-side trust can lead to serious vulnerabilities.
+Using Burp Suite as a proxy provided hands-on understanding of how attackers exploit weak validation and why secure applications must enforce controls on the server.
+
+⚠️ Disclaimer
+
+This lab was performed strictly in a controlled environment for educational purposes.
+Unauthorized testing on real systems is illegal.
