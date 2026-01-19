@@ -1,0 +1,225 @@
+🛡️ Business Logic Vulnerability Testing – Race Condition in Coupon Redemption (POST-Based)
+📌 Overview
+
+This lab focused on identifying and exploiting a business logic vulnerability known as a race condition within a coupon redemption system. The vulnerability allowed a coupon intended for single use to be redeemed multiple times by exploiting concurrent POST requests sent within a short time window.
+
+The lab demonstrates how insecure handling of POST-based state‑changing requests can lead to serious financial and business impact even when no traditional vulnerabilities (SQL injection, XSS, authentication bypass) are present.
+
+🎯 Objective
+
+Understand how race conditions occur in POST-based operations
+
+Analyze how coupon redemption systems work
+
+Use Burp Suite to observe and test application logic
+
+Exploit concurrent POST requests to bypass business rules
+
+Learn real-world mitigation techniques
+
+🧰 Tools Used
+Burp Suite (Community Edition)
+
+Purpose:
+
+Intercept and analyze HTTP POST requests
+
+Observe request timing and application behavior
+
+Test for business logic and concurrency flaws
+
+Burp Components Used:
+
+Proxy
+
+Intercept
+
+HTTP History
+
+Repeater / Intruder (conceptually for concurrency testing)
+
+🧠 Key Concepts
+1. Coupon Redemption Systems
+
+A coupon system allows users to submit a coupon code via a POST request to:
+
+Apply discounts
+
+Add credits to an account balance
+
+Redeem promotional offers
+
+A secure system must:
+
+Enforce “one coupon per user”
+
+Validate usage server-side
+
+Handle concurrent requests safely
+
+2. POST Requests in Web Applications
+
+POST requests are used when:
+
+Data modifies server state
+
+Sensitive parameters are submitted
+
+Actions such as payments, redemptions, and updates occur
+
+Coupon redemption is correctly implemented using POST, not GET.
+
+3. Race Condition Vulnerability
+
+A race condition occurs when:
+
+Multiple POST requests are processed simultaneously
+
+The application checks coupon validity
+
+The coupon usage state is updated after processing
+
+Multiple requests pass validation before the state is locked
+
+This is a Time-of-Check to Time-of-Use (TOCTOU) issue.
+
+🧪 Methodology (Step-by-Step)
+Step 1: Proxy Setup
+
+Burp Suite was launched
+
+Browser traffic was routed through Burp Proxy
+
+Intercept was enabled to ensure requests were captured
+
+Step 2: Proxy Verification
+
+To confirm Burp was working:
+
+A test website was opened
+
+The page was refreshed
+
+Burp successfully intercepted the request
+
+This confirmed correct proxy configuration.
+
+Step 3: Observing the Coupon Redemption Request
+
+Redeeming a coupon triggered a POST request to the backend
+
+The request contained coupon-related parameters (e.g. coupon code, user context)
+
+The server responded by updating the user’s balance
+
+Step 4: Exploiting the Race Condition
+
+Multiple POST requests for coupon redemption were sent concurrently
+
+The backend validated the coupon multiple times before marking it as used
+
+Each request credited the account successfully
+
+As a result:
+
+The coupon was redeemed more than once
+
+The account balance increased beyond intended limits
+
+🔍 Vulnerability Identified
+
+Race Condition in POST-Based Coupon Redemption
+
+Root Cause
+
+Coupon validation and usage update were not atomic
+
+No locking or transactional control was implemented
+
+Concurrent POST requests bypassed usage restrictions
+
+💥 Impact
+
+In a real-world system, this vulnerability could result in:
+
+Unlimited coupon reuse
+
+Financial losses
+
+Abuse of promotions
+
+Fraudulent balance inflation
+
+Revenue leakage
+
+Loss of platform integrity
+
+👨‍💻 Real-World Attacker Scenario
+
+An attacker could:
+
+Automate multiple POST requests
+
+Send them simultaneously
+
+Exploit backend processing delays
+
+Gain credits, discounts, or items repeatedly
+
+This attack:
+
+Requires no authentication bypass
+
+Requires no injection
+
+Exploits logic and timing only
+
+🔐 Mitigation Strategies
+
+To prevent this vulnerability:
+
+Atomic Transactions
+
+Validate and redeem coupons in a single database transaction
+
+Server-Side Locking
+
+Lock coupon rows during processing
+
+Unique Constraints
+
+Enforce one-use rules at the database level
+
+Idempotency Tokens
+
+Prevent duplicate POST request processing
+
+Rate Limiting
+
+Block rapid repeated POST submissions
+
+Final State Revalidation
+
+Re-check coupon usage just before applying changes
+
+📚 What I Learned
+
+POST requests are critical attack surfaces
+
+Business logic flaws are often more dangerous than technical bugs
+
+Race conditions are difficult to detect but highly impactful
+
+Burp Suite is a real-world professional testing tool
+
+Secure coding requires thinking about concurrency, not just validation
+
+🧾 Conclusion
+
+This lab demonstrated how insecure handling of POST-based coupon redemption can lead to severe business logic abuse. Even with proper authentication and validation, failing to manage concurrency allows attackers to bypass restrictions and manipulate application behavior.
+
+Understanding and preventing race conditions is essential for building secure, real-world web applications.
+
+⚠️ Disclaimer
+
+This lab was conducted strictly for educational purposes in a controlled environment. The techniques discussed are intended for learning and defensive security improvement only.
