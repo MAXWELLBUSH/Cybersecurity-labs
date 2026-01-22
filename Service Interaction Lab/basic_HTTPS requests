@@ -1,0 +1,51 @@
+📘 README — Basic HTTP Requests
+1. Introduction
+
+In this task, I performed basic HTTP requests to understand how web servers respond to client requests. HTTP requests are fundamental in web communication and are commonly used in reconnaissance to identify server behavior and accessible resources.
+
+2. Objective
+
+The objective of this task was to:
+
+Send HTTP requests to a web server.
+
+Understand the structure of HTTP requests and responses.
+
+Analyze how servers respond to different HTTP methods.
+
+3. Tools Used
+
+Netcat (nc)
+
+Curl
+
+Kali Linux terminal
+
+4. Task Execution
+4.1 Sending an HTTP Request Using Netcat
+Command Used:
+nc 192.168.56.105 80
+
+HTTP Request Sent:
+GET / HTTP/1.1
+Host: example.com
+
+Result:
+
+The server responded with HTTP headers and webpage content.
+
+4.2 Sending an HTTP Request Using Curl
+Command Used:
+curl http://192.168.56.105
+
+Result:
+
+The server returned the HTML content of the webpage.
+
+5. Analysis
+
+This task demonstrated how HTTP requests are used to communicate with web servers. By manually sending requests, I was able to understand how web servers process and respond to client queries.
+
+6. Conclusion
+
+In this lab, I successfully performed basic HTTP requests using netcat and curl. This helped me understand the fundamentals of web communication and its importance in cybersecurity reconnaissance.
